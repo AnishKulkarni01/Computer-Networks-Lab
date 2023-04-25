@@ -48,8 +48,6 @@ int main()
 
     char msg[BUFFERSIZE];
     int clientLength = sizeof(clientAddress);
-
-    ;
     int clientSocket ;
     while (1)
     {

@@ -101,6 +101,7 @@ int main()
                     ackpkt.isAck = 1;
                     pkt_len=sizeof(ackpkt);
                     fprintf(fp,rcvpkt.data);
+                    fflush(fp);
                     if (sendto(s, &ackpkt, pkt_len, 0, (struct sockaddr *)&si_other,slen) == -1)
                     {
                         die("sendto()");
@@ -134,6 +135,7 @@ int main()
                     ackpkt.sq_no = 1;
                     ackpkt.isAck = 1;
                     fprintf(fp,rcvpkt.data);
+                    fflush(fp);
                     if (sendto(s, &ackpkt, pkt_len, 0, (struct sockaddr *)&si_other,slen) == -1)
                     {
                         die("sendto()");
