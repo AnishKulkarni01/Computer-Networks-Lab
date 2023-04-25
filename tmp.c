@@ -14,24 +14,25 @@
 
 int main()
 {
-     char const* const fileName = "input.txt";
+     char const* const fileName = "output.txt";
 
-    FILE* fp = fopen(fileName, "r");
+    FILE* fp = fopen(fileName, "w");
 
     if (!fp) {
         printf("\n Unable to open : %s ", fileName);
         return -1;
     }
 char line[BUFLEN];
-while(1)
-{
-if(fgets(line, sizeof(line), fp) != NULL)
-{
-    printf("%s %d\n", line,strlen(line));
-
-}
-else break;
-}
-
+char line2[5]="hello";
+// while(1)
+// {
+// if(fgets(line, sizeof(line), fp) != NULL)
+// {
+// printf("%s %d\n", line,strlen(line));
+// }
+// else break;
+// }
+fprintf(fp, line2);
+close(fp);
     return 0;
 }

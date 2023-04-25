@@ -29,6 +29,16 @@ void die(char *s)
 
 int main()
 {
+
+    char const* const fileName = "output.txt";
+
+    FILE* fp = fopen(fileName, "w");
+
+    if (!fp) {
+        printf("\n Unable to open : %s ", fileName);
+        return -1;
+    }
+    char line[BUFLEN];
     struct sockaddr_in si_me, si_other;
     int s, i, slen = sizeof(si_other), pkt_len;
     // char buf[BUFLEN];
@@ -90,6 +100,7 @@ int main()
                     ackpkt.sq_no = 0;
                     ackpkt.isAck = 1;
                     pkt_len=sizeof(ackpkt);
+                    fprintf(fp,rcvpkt.data);
                     if (sendto(s, &ackpkt, pkt_len, 0, (struct sockaddr *)&si_other,slen) == -1)
                     {
                         die("sendto()");
@@ -122,6 +133,7 @@ int main()
                     printf("Packet received with seq. no. %d and Packet content is = %s\n", rcvpkt.sq_no, rcvpkt.data);
                     ackpkt.sq_no = 1;
                     ackpkt.isAck = 1;
+                    fprintf(fp,rcvpkt.data);
                     if (sendto(s, &ackpkt, pkt_len, 0, (struct sockaddr *)&si_other,slen) == -1)
                     {
                         die("sendto()");
@@ -139,6 +151,7 @@ int main()
             break;
         }
     }
+    close(fp);
     close(s);
     return 0;
 }

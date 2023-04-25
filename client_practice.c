@@ -42,7 +42,7 @@ int main() {
     memset((char*)&si_other, 0, sizeof(si_other));
     si_other.sin_family = AF_INET;
     si_other.sin_port = htons(PORT);
-    si_other.sin_addr.s_addr = inet_addr("172.24.70.240");
+    si_other.sin_addr.s_addr = inet_addr("127.0.0.1");
     PKT sendpkt;
     PKT rcvpkt;
     int state = 0;
