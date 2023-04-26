@@ -98,9 +98,11 @@ int main()
                 sendpkt.isAck = 0;
                 sendpkt.clientNo=0;
                 sendpkt.data_size=len;
-                printf("Sending packet from c1 ............\n");
+                //printf("Sending packet from c1 ............\n");
                 send(sock, &sendpkt, sizeof(sendpkt), 0);
-                printf("Packet sent from c1 with seq_no :%d  data:%s size : %d isAck : %d\n",sendpkt.sq_no,sendpkt.data,sendpkt.size,sendpkt.isAck);
+                //printf("Packet sent from c1 with seq_no :%d  data:%s size : %d isAck : %d\n",sendpkt.sq_no,sendpkt.data,sendpkt.size,sendpkt.isAck);
+                printf("SENT_PKT : Seq.No = %d, Size = %d \n",sendpkt.sq_no,sendpkt.size);
+                
                  state=1;
                  break;
             }
@@ -109,7 +111,8 @@ int main()
                 char line[BUFLEN];
                 int bytesRecvd = recv(sock, &rcvpkt, sizeof(rcvpkt), 0); //receive ack
                 if(rcvpkt.isAck==1 && rcvpkt.sq_no==global_sq_no && rcvpkt.clientNo==0){
-                    printf("Received ack from s2 with seq_no :%d  size : %d isAck : %d\n",rcvpkt.sq_no,rcvpkt.size,rcvpkt.isAck);
+                   // printf("Received ack from s2 with seq_no :%d  size : %d isAck : %d\n",rcvpkt.sq_no,rcvpkt.size,rcvpkt.isAck);
+                    printf("RECV_ACK : Seq.No = %d \n",rcvpkt.sq_no);
                     global_sq_no+=sendpkt.data_size;
                 }
                  state=0;
