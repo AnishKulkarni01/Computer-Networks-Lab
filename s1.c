@@ -153,7 +153,7 @@ int main()
                 exit(0);
             }
             sendpkt2.isAck = 1;
-            sendpkt2.clientNo = 0;
+            sendpkt2.clientNo = 1;
             sendpkt2.sq_no = rcvpkt2.sq_no;
             c2_seqno=rcvpkt2.sq_no;
             sendpkt2.size = 0;
