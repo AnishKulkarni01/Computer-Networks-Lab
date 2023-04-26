@@ -32,95 +32,113 @@ int main()
     /* CREATE A TCP SOCKET*/
 
     int sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
-    if (sock < 0) { printf("Error in opening a socket"); exit(0); }
+    if (sock < 0) { 
+        printf("Error in opening a socket"); exit(0); 
+        }
     printf("Client Socket Created\n");
-    
+
     /*CONSTRUCT SERVER ADDRESS STRUCTURE*/
     struct sockaddr_in serverAddr;
     memset(&serverAddr, 0, sizeof(serverAddr));
-    
+
     /*memset() is used to fill a block of memory with a particular value*/
     serverAddr.sin_family = AF_INET;
     serverAddr.sin_port = htons(12345); //You can change port number here
     serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1"); //Specify server's IP address here
     printf("Address assigned\n");
-    
+
     /*ESTABLISH CONNECTION*/
-    int c = connect(sock, (struct sockaddr*)&serverAddr, sizeof(serverAddr));
-    if (c < 0)
+    int c1 = connect(sock, (struct sockaddr*)&serverAddr, sizeof(serverAddr));
+    if (c1 < 0)
     {
         printf("Error while establishing connection");
         exit(0);
     }
-    printf("Connection Established\n");
-
+printf("Connection Established\n");
     char const* const fileName = "id.txt";
 
     FILE* fp = fopen(fileName, "r");
-    
+
 
     if (!fp) {
         printf("\n Unable to open : %s ", fileName);
         return -1;
     }
-    int state=0;
+    int state = 0;
     PKT sendpkt;
     PKT rcvpkt;
-    int global_sq_no=0;
-    int flag=0;
-    while(1)
+    int global_sq_no = 0;
+    int flag = 0;
+    char c;
+    while (1)
     {
-        switch(state)
+        switch (state)
         {
-            case 0:   //send packet from c1
-            {
+        case 0:   //send packet from c1
+        {
 
-                char line[BUFLEN];
-                char c;
+            char line[BUFLEN];
 
-                while((c=fgetc(fp))!=',')
-                {
-                    if(c==EOF)
-                    {
-                        flag=1;
-                        break;
-                    }
-                   strncat(line, &c, 1);
-                }
-                
-                //printf("%s\n",line);
-                 int len = strlen(line);
-                 //printf("%d\n",len);
-                strcpy(sendpkt.data, line);
-                memset(line, 0, sizeof(line));
-                sendpkt.size = len;
+            if (c == '.') {
+                sendpkt.isAck = 1;
+                strcpy(sendpkt.data, ".");
                 sendpkt.sq_no = global_sq_no;
-                sendpkt.isAck = 0;
-                sendpkt.clientNo=1;
-                sendpkt.data_size=len;
-                //printf("Sending packet from c2 ............\n");
+                sendpkt.clientNo = 1;
+                sendpkt.data_size = 0;
                 send(sock, &sendpkt, sizeof(sendpkt), 0);
-                //printf("Packet sent from c2 with seq_no :%d  data:%s size : %d isAck : %d\n",sendpkt.sq_no,sendpkt.data,sendpkt.size,sendpkt.isAck);
-                printf("SENT_PKT : Seq.No = %d, Size = %d \n",sendpkt.sq_no,sendpkt.size);
-                 
-                 state=1;
-                 break;
+                flag = 1;
             }
-            case 1: //wait for ack
+            while ((c = fgetc(fp)) != ',' && c != '.')
             {
-                char line[BUFLEN];
-                int bytesRecvd = recv(sock, &rcvpkt, sizeof(rcvpkt), 0); //receive ack
-                if(rcvpkt.isAck==1 && rcvpkt.sq_no==global_sq_no && rcvpkt.clientNo==0){
-                   // printf("Received ack from s2 with seq_no :%d  size : %d isAck : %d\n",rcvpkt.sq_no,rcvpkt.size,rcvpkt.isAck);
-                    printf("RECV_ACK : Seq.No = %d \n",rcvpkt.sq_no);
-                    global_sq_no+=sendpkt.data_size;
+                if (c == EOF)
+                {
+                    flag = 1;
+                    break;
                 }
-                 state=0;
-                 break;
+                strncat(line, &c, 1);
             }
-           
+            {
+                if (c == EOF)
+                {
+                    flag = 1;
+                    break;
+                }
+                strncat(line, &c, 1);
+            }
+
+            //printf("%s\n",line);
+            int len = strlen(line);
+            //printf("%d\n",len);
+            strcpy(sendpkt.data, line);
+            memset(line, 0, sizeof(line));
+            sendpkt.size = len;
+            sendpkt.sq_no = global_sq_no;
+            sendpkt.isAck = 0;
+            sendpkt.clientNo = 1;
+            sendpkt.data_size = len;
+            //printf("Sending packet from c2 ............\n");
+            send(sock, &sendpkt, sizeof(sendpkt), 0);
+            //printf("Packet sent from c2 with seq_no :%d  data:%s size : %d isAck : %d\n",sendpkt.sq_no,sendpkt.data,sendpkt.size,sendpkt.isAck);
+            printf("SENT_PKT : Seq.No = %d, Size = %d \n", sendpkt.sq_no, sendpkt.size);
+
+            state = 1;
+            break;
         }
-        if(flag==1)
+        case 1: //wait for ack
+        {
+            char line[BUFLEN];
+            int bytesRecvd = recv(sock, &rcvpkt, sizeof(rcvpkt), 0); //receive ack
+            if (rcvpkt.isAck == 1 && rcvpkt.sq_no == global_sq_no && rcvpkt.clientNo == 0) {
+                // printf("Received ack from s2 with seq_no :%d  size : %d isAck : %d\n",rcvpkt.sq_no,rcvpkt.size,rcvpkt.isAck);
+                printf("RECV_ACK : Seq.No = %d \n", rcvpkt.sq_no);
+                global_sq_no += sendpkt.data_size;
+            }
+            state = 0;
+            break;
+        }
+
+        }
+        if (flag == 1)
         {
             break;
         }

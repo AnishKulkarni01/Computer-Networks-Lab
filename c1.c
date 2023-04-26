@@ -46,8 +46,8 @@ int main()
     printf("Address assigned\n");
     
     /*ESTABLISH CONNECTION*/
-    int c = connect(sock, (struct sockaddr*)&serverAddr, sizeof(serverAddr));
-    if (c < 0)
+    int c1 = connect(sock, (struct sockaddr*)&serverAddr, sizeof(serverAddr));
+    if (c1 < 0)
     {
         printf("Error while establishing connection");
         exit(0);
@@ -70,6 +70,7 @@ int main()
     int flag=0;
     struct timeval tv;
     time_t start_time;
+    char c;
     while(1)
     {
         switch(state)
@@ -78,9 +79,17 @@ int main()
             {
 
                 char line[BUFLEN];
-                char c;
-
-                while((c=fgetc(fp))!=',')
+                
+                if(c=='.'){
+                    sendpkt.isAck=0;
+                    strcpy(sendpkt.data,".");
+                    sendpkt.sq_no=global_sq_no;
+                    sendpkt.clientNo=0;
+                    sendpkt.data_size=1;
+                    send(sock, &sendpkt, sizeof(sendpkt), 0);
+                    flag=1;
+                }
+                while((c=fgetc(fp))!=',' && c!='.')
                 {
                     if(c==EOF)
                     {

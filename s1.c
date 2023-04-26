@@ -91,11 +91,11 @@ int main()
         {
         case 0: { // recieve from client1
             int temp2 = recv(clientSocket1, &rcvpkt1, sizeof(rcvpkt1), 0);
-            if(rand()%2==0)
-            {
-                printf("Dropping packet from client1 with data:%s\n",rcvpkt1.data);
-                break;
-            }
+            // if(rand()%2==0)
+            // {
+            //     printf("Dropping packet from client1 with data:%s\n",rcvpkt1.data);
+            //     break;
+            // }
             printf("Recieved packet from client1 with data:%s\n",rcvpkt1.data);
             if(strcmp(rcvpkt1.data,".")==0)
             {
@@ -132,8 +132,8 @@ int main()
                 break;
             }
             fprintf(fp,"%s",rcvpkt2.data);
-            fprintf(fp,",");
-            fprintf(fp,"\n");
+            //fprintf(fp,",");
+            //fprintf(fp,"\n");
             fflush(fp);
             if (temp3 < 0)
             {
