@@ -1,5 +1,5 @@
-a, 1
-b, 2
-c, 3
-d, 4
-e, 5
+anish, 100
+bcdef, 212
+cock, 3123
+dog, 4123
+elephant, 51

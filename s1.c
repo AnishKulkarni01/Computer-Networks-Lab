@@ -83,7 +83,7 @@ int main()
     int t=10;
     int flag1=1;
     int flag2=1;
-    while (t--)
+    while (flag1 && flag2)
     {
         switch (state)
         {
@@ -125,6 +125,7 @@ int main()
                 break;
             }
             fprintf(fp,"%s",rcvpkt2.data);
+            fprintf(fp,",");
             fprintf(fp,"\n");
             fflush(fp);
             if (temp3 < 0)

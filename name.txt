@@ -1,1 +1,1 @@
-a,b,c,d,e,exit
+anish,bcdef,cock,dog,elephant,exit

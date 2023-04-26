@@ -87,10 +87,7 @@ int main()
                     }
                    strncat(line, &c, 1);
                 }
-                if(flag==1)
-                {
-                    break;
-                }
+            
                 //printf("%s\n",line);
                  int len = strlen(line);
                  //printf("%d\n",len);
