@@ -71,7 +71,7 @@ int main()
     printf("Handling Client %s\n", inet_ntoa(clientAddress2.sin_addr));
     if (clientLength2 < 0) { printf("Error in client socket"); exit(0); }
     int state = 0;
-        char const* const fileName = "out.txt";
+        char const* const fileName = "list.txt";
 
     FILE* fp = fopen(fileName, "w");
     
@@ -83,12 +83,20 @@ int main()
     int t=10;
     int flag1=1;
     int flag2=1;
+    srand(time(0));
+
     while (flag1 && flag2)
     {
         switch (state)
         {
         case 0: { // recieve from client1
             int temp2 = recv(clientSocket1, &rcvpkt1, sizeof(rcvpkt1), 0);
+            if(rand()%2)  //drop packet with 50% probability
+            {
+                printf("Packet from client1 with seq_no=%d dropped\n",rcvpkt1.sq_no);
+                fflush(stdout);
+                break;
+            }
             printf("Recieved packet from client1 with data:%s\n",rcvpkt1.data);
             if(strcmp(rcvpkt1.data,".")==0)
             {
@@ -126,7 +134,7 @@ int main()
             }
             fprintf(fp,"%s",rcvpkt2.data);
             fprintf(fp,",");
-            fprintf(fp,"\n");
+            //fprintf(fp,"\n");
             fflush(fp);
             if (temp3 < 0)
             {
