@@ -11,6 +11,7 @@
 #include <fcntl.h>
 #define BUFLEN 512 // Max length of buffer
 #define PORT 8882  // The port on which to send data
+
 typedef struct packet
 {
     int sq_no;
@@ -81,7 +82,7 @@ int main() {
             break;
         case 1:
             fd_set readfds;
-            FD_ZERO(&readfds);
+            FD_ZERO(&readfds);   //monitor socket for incoming packets
             FD_SET(s, &readfds);
 
             tv.tv_sec = 5; // set the timeout to 5 seconds
@@ -181,7 +182,7 @@ int main() {
 
     }
 
-
+    close(fp);
     close(s);
     return 0;
 }

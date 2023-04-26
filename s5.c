@@ -66,8 +66,7 @@ int main()
                 printf("%s\n",msg);
                 if (strcmp(msg, ":exit") == 0)
                 {
-                    printf("Disconnected from %s:%d\n", inet_ntoa(clientAddress.sin_addr),
-                           ntohs(clientAddress.sin_port));
+                    printf("Disconnected from %s:%d\n", inet_ntoa(clientAddress.sin_addr),ntohs(clientAddress.sin_port));
                     break;
                 }
                 else

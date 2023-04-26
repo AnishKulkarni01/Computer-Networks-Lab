@@ -14,25 +14,27 @@
 
 int main()
 {
-     char const* const fileName = "output.txt";
+     char const* const fileName = "input.txt";
 
-    FILE* fp = fopen(fileName, "w");
+    FILE* fp = fopen(fileName, "r");
 
     if (!fp) {
         printf("\n Unable to open : %s ", fileName);
         return -1;
     }
 char line[BUFLEN];
-char line2[5]="hello";
-// while(1)
-// {
-// if(fgets(line, sizeof(line), fp) != NULL)
-// {
-// printf("%s %d\n", line,strlen(line));
-// }
-// else break;
-// }
-fprintf(fp, line2);
+char c;
+while((c=fgetc(fp))!=',')
+{
+    //printf("%c",c);
+   // fflush(stdout);
+   strncat(line, &c, 1);
+ 
+}
+printf("%s\n",line);
+ c=fgetc(fp);
+ printf("%c\n",c);
+  
 close(fp);
     return 0;
 }
