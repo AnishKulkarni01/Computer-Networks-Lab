@@ -151,7 +151,7 @@ printf("Connection Established\n");
             }
                 char line[BUFLEN];
                 int bytesRecvd = recv(sock, &rcvpkt, sizeof(rcvpkt), 0); //receive ack
-                if(rcvpkt.isAck==1 && rcvpkt.sq_no==global_sq_no && rcvpkt.clientNo==0){
+                if(rcvpkt.isAck==1 && rcvpkt.sq_no==global_sq_no && rcvpkt.clientNo==1){
                    // printf("Received ack from s2 with seq_no :%d  size : %d isAck : %d\n",rcvpkt.sq_no,rcvpkt.size,rcvpkt.isAck);
                     printf("RECV_ACK : Seq.No = %d \n",rcvpkt.sq_no);
                     global_sq_no+=sendpkt.data_size;
