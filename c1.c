@@ -125,12 +125,12 @@ int main()
             FD_ZERO(&readfds);   //monitor socket for incoming packets
             FD_SET(sock, &readfds);
 
-            tv.tv_sec = 5;// set the timeout to 2 seconds
+            tv.tv_sec = 4;// set the timeout to 2 seconds
             tv.tv_usec = 0;
 
             if (select(sock + 1, &readfds, NULL, NULL, &tv) == 0)
             {
-              printf("Timeout\n");
+             // printf("Timeout\n");
               send(sock, &sendpkt, sizeof(sendpkt), 0);
               printf("RE-TRANSMIT_PKT : Seq.No = %d, Size = %d \n",sendpkt.sq_no,sendpkt.data_size);
                gettimeofday(&tv, NULL); // restart timer
@@ -145,8 +145,12 @@ int main()
                    // printf("Received ack from s2 with seq_no :%d  size : %d isAck : %d\n",rcvpkt.sq_no,rcvpkt.size,rcvpkt.isAck);
                     printf("RECV_ACK : Seq.No = %d \n",rcvpkt.sq_no);
                     global_sq_no+=sendpkt.data_size;
+                    state=0;
                 }
-                 state=0;
+                else{
+                    state=1;
+                }
+                 
                  break;
             }
            

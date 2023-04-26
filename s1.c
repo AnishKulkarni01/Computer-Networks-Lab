@@ -7,6 +7,7 @@
 #define MAXPENDING 5
 #define BUFFERSIZE 32
 #define BUFLEN 512
+#define PDR 10
 typedef struct packet
 {
     int sq_no;
@@ -91,7 +92,8 @@ int main()
         {
         case 0: { // recieve from client1
             int temp2 = recv(clientSocket1, &rcvpkt1, sizeof(rcvpkt1), 0);
-            if(rand()%2==0)
+            
+            if(rand()%100<PDR)
             {
                 printf("DROP_PKT Seq.No. = %d\n",rcvpkt1.sq_no);
                // printf("Dropping packet from client1 with data:%s\n",rcvpkt1.data);
@@ -103,7 +105,7 @@ int main()
                 flag1=0;
                 break;
             }
-            fprintf(fp,"%s",rcvpkt1.data);
+            fprintf(fp," %s ",rcvpkt1.data);
             fprintf(fp,", ");
             
             if (temp2 < 0)
@@ -114,6 +116,7 @@ int main()
             sendpkt1.isAck = 1;
             sendpkt1.clientNo = 0;
             sendpkt1.sq_no = rcvpkt1.sq_no;
+            c1_seqno=rcvpkt1.sq_no;
             sendpkt1.size = 0;
             sendpkt1.data_size=0;
            // printf("Sending ack to client1 .....\n");
@@ -132,7 +135,7 @@ int main()
                 flag2=0;
                 break;
             }
-            fprintf(fp,"%s",rcvpkt2.data);
+            fprintf(fp,"%s ",rcvpkt2.data);
             //fprintf(fp,",");
             //fprintf(fp,"\n");
             fflush(fp);
@@ -144,6 +147,7 @@ int main()
             sendpkt2.isAck = 1;
             sendpkt2.clientNo = 0;
             sendpkt2.sq_no = rcvpkt2.sq_no;
+            c2_seqno=rcvpkt2.sq_no;
             sendpkt2.size = 0;
             sendpkt2.data_size=0;
            // printf("Sending ack to client2 .....\n");
