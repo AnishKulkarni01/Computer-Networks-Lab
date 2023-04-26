@@ -90,7 +90,7 @@ int main()
         case 0: { // recieve from client1
             int temp2 = recv(clientSocket1, &rcvpkt1, sizeof(rcvpkt1), 0);
             printf("Recieved packet from client1 with data:%s\n",rcvpkt1.data);
-            if(strcmp(rcvpkt1.data,"exit")==0)
+            if(strcmp(rcvpkt1.data,".")==0)
             {
                 flag1=0;
                 break;
@@ -119,7 +119,7 @@ int main()
             int temp3 = recv(clientSocket2, &rcvpkt2, sizeof(rcvpkt2), 0);
 
             printf("Recieved packet from client2 with data:%s\n",rcvpkt2.data);
-            if(strcmp(rcvpkt2.data,"exit")==0)
+            if(strcmp(rcvpkt2.data,".")==0)
             {
                 flag2=0;
                 break;
