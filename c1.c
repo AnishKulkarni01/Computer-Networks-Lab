@@ -18,6 +18,7 @@ typedef struct packet
     char data[BUFLEN];
     int size;
     int isAck;
+    int clientNo;
 } PKT;
 
 void die(char* s)
@@ -85,6 +86,7 @@ int main()
                 sendpkt.size = len;
                 sendpkt.sq_no = global_sq_no;
                 sendpkt.isAck = 0;
+                sendpkt.clientNo=0;
                 printf("Sending packet from c1 ............");
                 send(sock, line, len, 0);
                 printf("Packet sent from c1 with seq_no :%d  data:%s size : %d isAck : %d\n");
