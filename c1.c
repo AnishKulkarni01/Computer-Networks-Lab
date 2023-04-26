@@ -113,7 +113,7 @@ int main()
                 //printf("Sending packet from c1 ............\n");
                 send(sock, &sendpkt, sizeof(sendpkt), 0);
                 //printf("Packet sent from c1 with seq_no :%d  data:%s size : %d isAck : %d\n",sendpkt.sq_no,sendpkt.data,sendpkt.size,sendpkt.isAck);
-                printf("SENT_PKT : Seq.No = %d, Size = %d Bytes\n",sendpkt.sq_no,sendpkt.data_size);
+                printf("SENT_PKT : Seq.No = %d, Size = %d Bytes, Data= %s \n",sendpkt.sq_no,sendpkt.data_size,sendpkt.data);
                 
                  state=1;
                   gettimeofday(&tv, NULL);
@@ -131,10 +131,10 @@ int main()
 
             if (select(sock + 1, &readfds, NULL, NULL, &tv) == 0)
             {
-             // printf("Timeout\n");
+             printf("TIMEOUT\n");
              
               send(sock, &sendpkt, sizeof(sendpkt), 0);
-              printf("RE-TRANSMIT_PKT : Seq.No = %d, Size = %d Bytes\n",sendpkt.sq_no,sendpkt.data_size);
+              printf("RE-TRANSMIT_PKT : Seq.No = %d, Size = %d Bytes , Data = %s\n",sendpkt.sq_no,sendpkt.data_size,sendpkt.data);
                gettimeofday(&tv, NULL); // restart timer
             start_time = time(NULL);
 

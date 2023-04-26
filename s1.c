@@ -97,11 +97,11 @@ int main()
             if(rcvpkt1.sq_no==c1_seqno)continue;
             if(rand()%100<PDR )
             {
-                printf("DROP_PKT Seq.No. = %d\n",rcvpkt1.sq_no);
+                printf("DROP_PKT Seq.No. = %d, Client.No. = %d\n",rcvpkt1.sq_no,rcvpkt1.clientNo+1);
                // printf("Dropping packet from client1 with data:%s\n",rcvpkt1.data);
                 break;
             }
-            printf("RECV_PKT : Seq.No. = %d, Size = %d Bytes\n",rcvpkt1.sq_no,rcvpkt1.data_size);
+            printf("RECV_PKT : Seq.No. = %d, Size = %d Bytes, Data = %s\n",rcvpkt1.sq_no,rcvpkt1.data_size,rcvpkt1.data);
             if(strcmp(rcvpkt1.data,".")==0)
             {
                 flag1=0;
@@ -123,7 +123,7 @@ int main()
             sendpkt1.data_size=0;
            // printf("Sending ack to client1 .....\n");
             send(clientSocket1, &sendpkt1, sizeof(sendpkt1), 0);
-            printf("SENT_ACK : Seq.No. = %d\n",sendpkt1.sq_no);
+            printf("SENT_ACK : Seq.No. = %d, Client.No. = %d\n",sendpkt1.sq_no,sendpkt1.clientNo+1);
             state=1;
             break;
         }
@@ -133,11 +133,11 @@ int main()
               if(rcvpkt2.sq_no==c2_seqno)continue;
             if(rand()%100<PDR )
             {
-                printf("DROP_PKT Seq.No. = %d\n",rcvpkt2.sq_no);
+                printf("DROP_PKT Seq.No. = %d, Client.No. = %d\n",rcvpkt2.sq_no,rcvpkt2.clientNo+1);
                // printf("Dropping packet from client1 with data:%s\n",rcvpkt1.data);
                 break;
             }
-            printf("RECV_PKT Seq.No. = %d, Size = %d Bytes\n",rcvpkt2.sq_no,rcvpkt2.data_size);
+            printf("RECV_PKT Seq.No. = %d, Size = %d Bytes, Data = %s\n",rcvpkt2.sq_no,rcvpkt2.data_size,rcvpkt2.data);
             if(strcmp(rcvpkt2.data,".")==0)
             {
                 flag2=0;
@@ -160,7 +160,7 @@ int main()
             sendpkt2.data_size=0;
            // printf("Sending ack to client2 .....\n");
             send(clientSocket2, &sendpkt2, sizeof(sendpkt2), 0);
-            printf("SENT_ACK : Seq.No. = %d\n",sendpkt2.sq_no);
+            printf("SENT_ACK : Seq.No. = %d, Client.No. = %d\n",sendpkt2.sq_no,sendpkt2.clientNo+1);
             state=0;
             break;
         }
