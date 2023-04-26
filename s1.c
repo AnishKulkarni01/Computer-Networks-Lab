@@ -14,6 +14,7 @@ typedef struct packet
     int size;
     int isAck;
     int clientNo;
+    int data_size;
 } PKT;
 
 void die(char* s)
@@ -70,16 +71,18 @@ int main()
     printf("Handling Client %s\n", inet_ntoa(clientAddress2.sin_addr));
     if (clientLength2 < 0) { printf("Error in client socket"); exit(0); }
     int state = 0;
-        char const* const fileName = "name.txt";
+        char const* const fileName = "out.txt";
 
-    FILE* fp = fopen(fileName, "r");
+    FILE* fp = fopen(fileName, "w");
     
 
     if (!fp) {
         printf("\n Unable to open : %s ", fileName);
         return -1;
     }
-    int t=4;
+    int t=10;
+    int flag1=1;
+    int flag2=1;
     while (t--)
     {
         switch (state)
@@ -87,6 +90,14 @@ int main()
         case 0: { // recieve from client1
             int temp2 = recv(clientSocket1, &rcvpkt1, sizeof(rcvpkt1), 0);
             printf("Recieved packet from client1 with data:%s\n",rcvpkt1.data);
+            if(strcmp(rcvpkt1.data,"exit")==0)
+            {
+                flag1=0;
+                break;
+            }
+            fprintf(fp,"%s",rcvpkt1.data);
+            fprintf(fp,", ");
+            
             if (temp2 < 0)
             {
                 printf("problem in recieving from client 1");
@@ -96,6 +107,7 @@ int main()
             sendpkt1.clientNo = 0;
             sendpkt1.sq_no = rcvpkt1.sq_no;
             sendpkt1.size = 0;
+            sendpkt1.data_size=0;
            // printf("Sending ack to client1 .....\n");
             send(clientSocket1, &sendpkt1, sizeof(sendpkt1), 0);
             printf("Sent ack to client1 .....\n");
@@ -105,8 +117,16 @@ int main()
         case 1: // recieve from client2
         {
             int temp3 = recv(clientSocket2, &rcvpkt2, sizeof(rcvpkt2), 0);
-            
+
             printf("Recieved packet from client2 with data:%s\n",rcvpkt2.data);
+            if(strcmp(rcvpkt2.data,"exit")==0)
+            {
+                flag2=0;
+                break;
+            }
+            fprintf(fp,"%s",rcvpkt2.data);
+            fprintf(fp,"\n");
+            fflush(fp);
             if (temp3 < 0)
             {
                 printf("problem in recieving from client2");
@@ -116,6 +136,7 @@ int main()
             sendpkt2.clientNo = 0;
             sendpkt2.sq_no = rcvpkt2.sq_no;
             sendpkt2.size = 0;
+            sendpkt2.data_size=0;
            // printf("Sending ack to client2 .....\n");
             send(clientSocket2, &sendpkt2, sizeof(sendpkt2), 0);
             printf("Sent ack to client2 .....\n");
@@ -126,6 +147,10 @@ int main()
 
         }
     }
-
+    close(clientSocket1);
+    close(clientSocket2);
+    close(serverSocket);
+    fclose(fp);
+return 0;
 }
 
