@@ -7,7 +7,7 @@
 #define MAXPENDING 5
 #define BUFFERSIZE 32
 #define BUFLEN 512
-#define PDR 10
+#define PDR 10    // write 10 for 10% loss rate
 typedef struct packet
 {
     int sq_no;
@@ -101,7 +101,7 @@ int main()
                // printf("Dropping packet from client1 with data:%s\n",rcvpkt1.data);
                 break;
             }
-            printf("RECV_PKT : Seq.No. = %d, Size = %d\n",rcvpkt1.sq_no,rcvpkt1.data_size);
+            printf("RECV_PKT : Seq.No. = %d, Size = %d Bytes\n",rcvpkt1.sq_no,rcvpkt1.data_size);
             if(strcmp(rcvpkt1.data,".")==0)
             {
                 flag1=0;
@@ -137,7 +137,7 @@ int main()
                // printf("Dropping packet from client1 with data:%s\n",rcvpkt1.data);
                 break;
             }
-            printf("RECV_PKT Seq.No. = %d, Size = %d\n",rcvpkt2.sq_no,rcvpkt2.data_size);
+            printf("RECV_PKT Seq.No. = %d, Size = %d Bytes\n",rcvpkt2.sq_no,rcvpkt2.data_size);
             if(strcmp(rcvpkt2.data,".")==0)
             {
                 flag2=0;
