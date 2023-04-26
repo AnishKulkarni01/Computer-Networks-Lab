@@ -125,12 +125,13 @@ int main()
             FD_ZERO(&readfds);   //monitor socket for incoming packets
             FD_SET(sock, &readfds);
 
-            tv.tv_sec = 4;// set the timeout to 2 seconds
+            tv.tv_sec = 2;// set the timeout to 2 seconds
             tv.tv_usec = 0;
 
             if (select(sock + 1, &readfds, NULL, NULL, &tv) == 0)
             {
              // printf("Timeout\n");
+             
               send(sock, &sendpkt, sizeof(sendpkt), 0);
               printf("RE-TRANSMIT_PKT : Seq.No = %d, Size = %d \n",sendpkt.sq_no,sendpkt.data_size);
                gettimeofday(&tv, NULL); // restart timer

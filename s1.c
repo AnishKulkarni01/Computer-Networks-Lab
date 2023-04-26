@@ -25,8 +25,8 @@ void die(char* s)
 }
 int main()
 {
-    int c1_seqno=0;
-    int c2_seqno=1;
+    int c1_seqno=-1;
+    int c2_seqno=-1;
     PKT sendpkt1;
     PKT rcvpkt1;
     PKT sendpkt2;
@@ -86,14 +86,16 @@ int main()
     int t=10;
     int flag1=1;
     int flag2=1;
+    int count=0;
+    
     while (flag1 && flag2)
     {
         switch (state)
         {
         case 0: { // recieve from client1
             int temp2 = recv(clientSocket1, &rcvpkt1, sizeof(rcvpkt1), 0);
-            
-            if(rand()%100<PDR)
+            if(rcvpkt1.sq_no==c1_seqno)continue;
+            if(rand()%100<PDR )
             {
                 printf("DROP_PKT Seq.No. = %d\n",rcvpkt1.sq_no);
                // printf("Dropping packet from client1 with data:%s\n",rcvpkt1.data);
