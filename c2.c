@@ -119,7 +119,7 @@ printf("Connection Established\n");
             //printf("Sending packet from c2 ............\n");
             send(sock, &sendpkt, sizeof(sendpkt), 0);
             //printf("Packet sent from c2 with seq_no :%d  data:%s size : %d isAck : %d\n",sendpkt.sq_no,sendpkt.data,sendpkt.size,sendpkt.isAck);
-            printf("SENT_PKT : Seq.No = %d, Size = %d \n", sendpkt.sq_no, sendpkt.size);
+            printf("SENT_PKT : Seq.No = %d, Size = %d \n", sendpkt.sq_no, sendpkt.data_size);
 
             state = 1;
             break;
