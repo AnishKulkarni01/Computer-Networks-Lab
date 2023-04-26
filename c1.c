@@ -1,3 +1,5 @@
+// Anish Kulkarni
+// 2020A7PS0975P
 #include <stdio.h>  //printf
 #include <string.h> //memset
 #include <stdlib.h> //exit(0);
@@ -11,6 +13,7 @@
 #include <fcntl.h>
 #define BUFLEN 512 // Max length of buffer
 #define PORT 8882  // The port on which to send data
+#define TIMEOUT 2
 
 typedef struct packet
 {
@@ -71,7 +74,6 @@ int main()
     struct timeval tv;
     time_t start_time;
     char c;
-    srand((time(NULL)));
     while(1)
     {
         switch(state)
@@ -126,7 +128,7 @@ int main()
             FD_ZERO(&readfds);   //monitor socket for incoming packets
             FD_SET(sock, &readfds);
 
-            tv.tv_sec = 2;// set the timeout to 2 seconds
+            tv.tv_sec = TIMEOUT;// set the timeout to 2 seconds
             tv.tv_usec = 0;
 
             if (select(sock + 1, &readfds, NULL, NULL, &tv) == 0)
