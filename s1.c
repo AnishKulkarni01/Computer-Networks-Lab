@@ -24,6 +24,8 @@ void die(char* s)
 }
 int main()
 {
+    int c1_seqno=0;
+    int c2_seqno=1;
     PKT sendpkt1;
     PKT rcvpkt1;
     PKT sendpkt2;
@@ -83,18 +85,15 @@ int main()
     int t=10;
     int flag1=1;
     int flag2=1;
-    srand(time(0));
-
     while (flag1 && flag2)
     {
         switch (state)
         {
         case 0: { // recieve from client1
             int temp2 = recv(clientSocket1, &rcvpkt1, sizeof(rcvpkt1), 0);
-            if(rand()%2)  //drop packet with 50% probability
+            if(rand()%2==0)
             {
-                printf("Packet from client1 with seq_no=%d dropped\n",rcvpkt1.sq_no);
-                fflush(stdout);
+                printf("Dropping packet from client1 with data:%s\n",rcvpkt1.data);
                 break;
             }
             printf("Recieved packet from client1 with data:%s\n",rcvpkt1.data);
@@ -134,7 +133,7 @@ int main()
             }
             fprintf(fp,"%s",rcvpkt2.data);
             fprintf(fp,",");
-            //fprintf(fp,"\n");
+            fprintf(fp,"\n");
             fflush(fp);
             if (temp3 < 0)
             {
@@ -162,4 +161,3 @@ int main()
     fclose(fp);
 return 0;
 }
-
