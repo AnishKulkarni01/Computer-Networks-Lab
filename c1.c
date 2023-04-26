@@ -28,17 +28,21 @@ void die(char* s)
 int main()
 {
     /* CREATE A TCP SOCKET*/
+
     int sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (sock < 0) { printf("Error in opening a socket"); exit(0); }
     printf("Client Socket Created\n");
+    
     /*CONSTRUCT SERVER ADDRESS STRUCTURE*/
     struct sockaddr_in serverAddr;
     memset(&serverAddr, 0, sizeof(serverAddr));
+    
     /*memset() is used to fill a block of memory with a particular value*/
     serverAddr.sin_family = AF_INET;
     serverAddr.sin_port = htons(12345); //You can change port number here
     serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1"); //Specify server's IP address here
     printf("Address assigned\n");
+    
     /*ESTABLISH CONNECTION*/
     int c = connect(sock, (struct sockaddr*)&serverAddr, sizeof
     (serverAddr));
@@ -58,7 +62,49 @@ int main()
         printf("\n Unable to open : %s ", fileName);
         return -1;
     }
-
+    int state=0;
+    PKT sendpkt;
+    PKT rcvpkt;
+    int global_sq_no=0;
+    while(1)
+    {
+        switch(state)
+        {
+            case 0:   //send packet from c1
+            {
+                char line[BUFLEN];
+                char c;
+                while((c=fgetc(fp))!=',')
+                {
+                   strncat(line, &c, 1);
+                }
+                //printf("%s\n",line);
+                 int len = strlen(line);
+                 //printf("%d\n",len);
+                strcpy(sendpkt.data, line);
+                sendpkt.size = len;
+                sendpkt.sq_no = global_sq_no;
+                sendpkt.isAck = 0;
+                printf("Sending packet from c1 ............");
+                send(sock, line, len, 0);
+                printf("Packet sent from c1 with seq_no :%d  data:%s size : %d isAck : %d\n");
+                 state=1;
+                 break;
+            }
+            case 1: //wait for ack
+            {
+                char line[BUFLEN];
+                int bytesRecvd = recv(sock, &rcvpkt, sizeof(rcvpkt), 0); //receive ack
+                if(rcvpkt.isAck==1 && rcvpkt.sq_no==global_sq_no){
+                    printf("Received ack from s2 with seq_no :%d  size : %d isAck : %d\n",rcvpkt.sq_no,rcvpkt.size,rcvpkt.isAck);
+                    global_sq_no+=sizeof(sendpkt.data);
+                }
+                 state=0;
+                 break;
+            }
+           
+        }
+    }
 
 
 
