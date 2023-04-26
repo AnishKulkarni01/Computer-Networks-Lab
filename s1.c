@@ -130,7 +130,13 @@ int main()
         case 1: // recieve from client2
         {
             int temp3 = recv(clientSocket2, &rcvpkt2, sizeof(rcvpkt2), 0);
-
+              if(rcvpkt2.sq_no==c2_seqno)continue;
+            if(rand()%100<PDR )
+            {
+                printf("DROP_PKT Seq.No. = %d\n",rcvpkt2.sq_no);
+               // printf("Dropping packet from client1 with data:%s\n",rcvpkt1.data);
+                break;
+            }
             printf("RECV_PKT Seq.No. = %d, Size = %d\n",rcvpkt2.sq_no,rcvpkt2.data_size);
             if(strcmp(rcvpkt2.data,".")==0)
             {

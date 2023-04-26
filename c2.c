@@ -69,6 +69,8 @@ printf("Connection Established\n");
     PKT rcvpkt;
     int global_sq_no = 0;
     int flag = 0;
+    struct timeval tv;
+    time_t start_time;
     char c;
     while (1)
     {
@@ -124,18 +126,41 @@ printf("Connection Established\n");
             state = 1;
             break;
         }
-        case 1: //wait for ack
-        {
-            char line[BUFLEN];
-            int bytesRecvd = recv(sock, &rcvpkt, sizeof(rcvpkt), 0); //receive ack
-            if (rcvpkt.isAck == 1 && rcvpkt.sq_no == global_sq_no && rcvpkt.clientNo == 0) {
-                // printf("Received ack from s2 with seq_no :%d  size : %d isAck : %d\n",rcvpkt.sq_no,rcvpkt.size,rcvpkt.isAck);
-                printf("RECV_ACK : Seq.No = %d \n", rcvpkt.sq_no);
-                global_sq_no += sendpkt.data_size;
+            case 1: //wait for ack
+            {
+            fd_set readfds;
+            FD_ZERO(&readfds);   //monitor socket for incoming packets
+            FD_SET(sock, &readfds);
+
+            tv.tv_sec = 2;// set the timeout to 2 seconds
+            tv.tv_usec = 0;
+
+            if (select(sock + 1, &readfds, NULL, NULL, &tv) == 0)
+            {
+             // printf("Timeout\n");
+             
+              send(sock, &sendpkt, sizeof(sendpkt), 0);
+              printf("RE-TRANSMIT_PKT : Seq.No = %d, Size = %d \n",sendpkt.sq_no,sendpkt.data_size);
+               gettimeofday(&tv, NULL); // restart timer
+            start_time = time(NULL);
+
+
+              break;
             }
-            state = 0;
-            break;
-        }
+                char line[BUFLEN];
+                int bytesRecvd = recv(sock, &rcvpkt, sizeof(rcvpkt), 0); //receive ack
+                if(rcvpkt.isAck==1 && rcvpkt.sq_no==global_sq_no && rcvpkt.clientNo==0){
+                   // printf("Received ack from s2 with seq_no :%d  size : %d isAck : %d\n",rcvpkt.sq_no,rcvpkt.size,rcvpkt.isAck);
+                    printf("RECV_ACK : Seq.No = %d \n",rcvpkt.sq_no);
+                    global_sq_no+=sendpkt.data_size;
+                    state=0;
+                }
+                else{
+                    state=1;
+                }
+                 
+                 break;
+            }
 
         }
         if (flag == 1)
