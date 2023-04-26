@@ -14,7 +14,7 @@
 
 int main()
 {
-     char const* const fileName = "input.txt";
+     char const* const fileName = "name.txt";
 
     FILE* fp = fopen(fileName, "r");
 

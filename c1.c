@@ -45,9 +45,7 @@ int main()
     printf("Address assigned\n");
     
     /*ESTABLISH CONNECTION*/
-    int c = connect(sock, (struct sockaddr*)&serverAddr, sizeof
-    (serverAddr));
-    printf("%d\n", c);
+    int c = connect(sock, (struct sockaddr*)&serverAddr, sizeof(serverAddr));
     if (c < 0)
     {
         printf("Error while establishing connection");
@@ -58,6 +56,7 @@ int main()
     char const* const fileName = "name.txt";
 
     FILE* fp = fopen(fileName, "r");
+    
 
     if (!fp) {
         printf("\n Unable to open : %s ", fileName);
@@ -67,29 +66,42 @@ int main()
     PKT sendpkt;
     PKT rcvpkt;
     int global_sq_no=0;
+    int flag=0;
     while(1)
     {
         switch(state)
         {
             case 0:   //send packet from c1
             {
+
                 char line[BUFLEN];
                 char c;
+
                 while((c=fgetc(fp))!=',')
                 {
+                    if(c==EOF)
+                    {
+                        flag=1;
+                        break;
+                    }
                    strncat(line, &c, 1);
+                }
+                if(flag==1)
+                {
+                    break;
                 }
                 //printf("%s\n",line);
                  int len = strlen(line);
                  //printf("%d\n",len);
                 strcpy(sendpkt.data, line);
+                memset(line, 0, sizeof(line));
                 sendpkt.size = len;
                 sendpkt.sq_no = global_sq_no;
                 sendpkt.isAck = 0;
                 sendpkt.clientNo=0;
-                printf("Sending packet from c1 ............");
-                send(sock, line, len, 0);
-                printf("Packet sent from c1 with seq_no :%d  data:%s size : %d isAck : %d\n");
+                printf("Sending packet from c1 ............\n");
+                send(sock, &sendpkt, sizeof(sendpkt), 0);
+                printf("Packet sent from c1 with seq_no :%d  data:%s size : %d isAck : %d\n",sendpkt.sq_no,sendpkt.data,sendpkt.size,sendpkt.isAck);
                  state=1;
                  break;
             }
@@ -97,7 +109,7 @@ int main()
             {
                 char line[BUFLEN];
                 int bytesRecvd = recv(sock, &rcvpkt, sizeof(rcvpkt), 0); //receive ack
-                if(rcvpkt.isAck==1 && rcvpkt.sq_no==global_sq_no){
+                if(rcvpkt.isAck==1 && rcvpkt.sq_no==global_sq_no && rcvpkt.clientNo==0){
                     printf("Received ack from s2 with seq_no :%d  size : %d isAck : %d\n",rcvpkt.sq_no,rcvpkt.size,rcvpkt.isAck);
                     global_sq_no+=sizeof(sendpkt.data);
                 }
@@ -105,6 +117,10 @@ int main()
                  break;
             }
            
+        }
+        if(flag==1)
+        {
+            break;
         }
     }
 

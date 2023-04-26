@@ -70,12 +70,23 @@ int main()
     printf("Handling Client %s\n", inet_ntoa(clientAddress2.sin_addr));
     if (clientLength2 < 0) { printf("Error in client socket"); exit(0); }
     int state = 0;
-    while (1)
+        char const* const fileName = "name.txt";
+
+    FILE* fp = fopen(fileName, "r");
+    
+
+    if (!fp) {
+        printf("\n Unable to open : %s ", fileName);
+        return -1;
+    }
+    int t=4;
+    while (t--)
     {
         switch (state)
         {
         case 0: { // recieve from client1
             int temp2 = recv(clientSocket1, &rcvpkt1, sizeof(rcvpkt1), 0);
+            printf("Recieved packet from client1 with data:%s\n",rcvpkt1.data);
             if (temp2 < 0)
             {
                 printf("problem in recieving from client 1");
@@ -84,24 +95,30 @@ int main()
             sendpkt1.isAck = 1;
             sendpkt1.clientNo = 0;
             sendpkt1.sq_no = rcvpkt1.sq_no;
-            printf("Sending ack to client1 .....");
+            sendpkt1.size = 0;
+           // printf("Sending ack to client1 .....\n");
             send(clientSocket1, &sendpkt1, sizeof(sendpkt1), 0);
+            printf("Sent ack to client1 .....\n");
             state=1;
             break;
         }
         case 1: // recieve from client2
         {
             int temp3 = recv(clientSocket2, &rcvpkt2, sizeof(rcvpkt2), 0);
+            
+            printf("Recieved packet from client2 with data:%s\n",rcvpkt2.data);
             if (temp3 < 0)
             {
-                printf("problem in recieving from client 2");
+                printf("problem in recieving from client2");
                 exit(0);
             }
             sendpkt2.isAck = 1;
             sendpkt2.clientNo = 0;
             sendpkt2.sq_no = rcvpkt2.sq_no;
-            printf("Sending ack to client1 .....");
+            sendpkt2.size = 0;
+           // printf("Sending ack to client2 .....\n");
             send(clientSocket2, &sendpkt2, sizeof(sendpkt2), 0);
+            printf("Sent ack to client2 .....\n");
             state=0;
             break;
         }
